@@ -1,0 +1,5 @@
+tree
+.tree
+*-swp
+snapshot.tar
+snapshot.tar.gz
