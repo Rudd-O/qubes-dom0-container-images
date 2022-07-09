@@ -9,14 +9,14 @@ clean: $(CLEAN)
 clean-%:
 	rm -rf $*/tree $*/snapshot.tar.gz
 
-%/snapshot.tar.gz:
+%/snapshot.tar.gz: %/*.cfg
 	cd $* && mock -r qubes-$*-x86_64.cfg --init
 	set -o pipefail ; cd $* && mock -r qubes-$*-x86_64.cfg --chroot \
 	"bash -c 'cd / && tar -c --one-file-system --sparse --exclude=./var/cache/dnf/\"*\" .'" | pigz > snapshot.tar.gz || { ret=$$? ; rm -f snapshot.tar.gz ; exit $$ret ; }
 
 %/tree: %/snapshot.tar.gz
 	cd $* && mkdir -p .tree
-	cd $* && tar -xz -C .tree -f snapshot.tar.gz -v --exclude=./var/cache/dnf/"*" || { ret=$$? ; cd .. ; chmod -R u+rwX .tree ; rm -rf .tree ; exit $$ret ; }
+	cd $* && sudo tar -xz -C .tree -f snapshot.tar.gz -v --exclude=./var/cache/dnf/"*" || { ret=$$? ; cd .. ; chmod -R u+rwX .tree ; rm -rf .tree ; exit $$ret ; }
 	cd $* && if test -d tree ; then chmod -R u+rwX tree && rm -rf tree ; fi
 	cd $* && mv .tree tree
 
