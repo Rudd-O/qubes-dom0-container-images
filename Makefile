@@ -1,6 +1,9 @@
+MAKEFLAGS += -rR
+.SUFFIXES :
 VERSIONS := 4.1
 CLEAN := $(patsubst %, clean-%, $(VERSIONS))
 DOCKERS := $(patsubst %, docker/qubes/%, $(VERSIONS))
+.PRECIOUS: %/snapshot.tar.gz
 
 .PHONY = $(DOCKERS) clean $(CLEAN)
 
@@ -16,7 +19,7 @@ clean-%:
 
 %/tree: %/snapshot.tar.gz
 	cd $* && mkdir -p .tree
-	cd $* && sudo tar -xz -C .tree -f snapshot.tar.gz -v --exclude=./var/cache/dnf/"*" || { ret=$$? ; cd .. ; chmod -R u+rwX .tree ; rm -rf .tree ; exit $$ret ; }
+	cd $* && sudo tar -xz -C .tree -f snapshot.tar.gz --exclude=./var/cache/dnf/"*" || { ret=$$? ; cd .. ; chmod -R u+rwX .tree ; rm -rf .tree ; exit $$ret ; }
 	cd $* && if test -d tree ; then chmod -R u+rwX tree && rm -rf tree ; fi
 	cd $* && mv .tree tree
 
