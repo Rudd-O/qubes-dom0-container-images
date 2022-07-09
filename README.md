@@ -2,7 +2,8 @@
 
 This repository contains buildable container and Fedora `mock` configuration
 files you can use to create both Docker container images and Toolbox container
-images (they are the same thing).
+images (they are the same thing).  These are truly minimal images -- the only
+three things we install explicitly are bash, systemd and dnf.
 
 The usefulness of this package derives from the fact that creating these
 images allows you to build clean-room RPM packages for Qubes OS dom0s without
